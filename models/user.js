@@ -4,10 +4,9 @@ const sequelize = require("../util/database");
 
 const User = sequelize.define("user", {
     userId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
     name: {
         type: Sequelize.STRING,
@@ -16,7 +15,7 @@ const User = sequelize.define("user", {
         type: Sequelize.STRING,
         allowNull: false,
     },
-    profilePicUrl: {
+    profilePicURL: {
         type: Sequelize.STRING,
         allowNull: true,
     },

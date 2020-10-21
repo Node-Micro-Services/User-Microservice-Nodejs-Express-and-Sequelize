@@ -1,17 +1,23 @@
 const Sequelize = require("sequelize").Sequelize;
 
 const sequelize = require("../util/database");
+const User = require("./user");
 
 const UserService = sequelize.define(
     "userService",
     {
-        userId: {
-            primaryKey: true,
+        id: {
             type: Sequelize.INTEGER,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true,
+        },
+        userId: {
+            type: Sequelize.STRING,
             allowNull: false,
         },
         serviceId: {
-            type: Sequelize.toString,
+            type: Sequelize.STRING,
             allowNull: false,
         },
     },

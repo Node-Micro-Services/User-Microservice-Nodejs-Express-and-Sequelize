@@ -6,7 +6,7 @@ const UserAddress = sequelize.define(
     "userAddress",
     {
         userId: {
-            type: Sequelize.INTEGER,
+            type: Sequelize.STRING,
             primaryKey: true,
             allowNull: false,
         },
@@ -26,7 +26,7 @@ const UserAddress = sequelize.define(
             type: Sequelize.STRING,
             allowNull: true,
         },
-        postCode: {
+        postalCode: {
             type: Sequelize.STRING,
             allowNull: true,
         },
