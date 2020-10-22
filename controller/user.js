@@ -1,5 +1,4 @@
-const chalk = require("chalk");
-const { request } = require("express");
+nst chalk = require("chalk");
 
 const User = require("../models/user");
 const UserAddress = require("../models/userAddress");
@@ -7,8 +6,14 @@ const Address = require("../models/userAddress");
 const UserLanguage = require("../models/userLanguage");
 const UserService = require("../models/userService");
 
-exports.getUser = (req, res, next) => {};
-exports.getService = (req, res, next) => {};
+// completed
+exports.getService = (req, res, next) => {
+    UserService.findAll().then((result) => {
+        const reply = JSON.stringify(result);
+        console.log(chalk.green.bold.inverse(reply));
+        res.status(200).json({ result });
+    });
+};
 
 // completed
 exports.postUser = (req, res, next) => {
@@ -160,7 +165,7 @@ exports.patchUser = (req, res, next) => {
                 where: { userId: req.body.userId },
             }
         );
-        
+
         await UserLanguage.destroy({
             where: { userId: req.body.userId },
         })
@@ -207,12 +212,84 @@ exports.patchUser = (req, res, next) => {
             .catch((error) => {
                 console.log(chalk.green.bold.inverse("USERSERVICE ERROR"));
             });
-        
     }
     start();
-    res.status(200).json(
-        {
-            "success": "true"
-        }
-    )
+    res.status(200).json({
+        success: "true",
+    });
+};
+
+// completed
+exports.getUser = (req, res, next) => {
+    const USERID = req.params.id;
+    const allDetails = req.query.allDetails;
+
+    if (allDetails == "true") {
+        User.findOne({
+            where: { userId: USERID },
+        })
+            .then((user) => {
+                UserAddress.findOne({
+                    where: { userId: USERID },
+                })
+                    .then((useraddress) => {
+                        UserLanguage.findAll(
+                            {
+                                where: { userId: USERID}
+                            }
+                        ).then(userlanguage=>{
+                            UserService.findAll(
+                                {
+                                    where: { userId: USERID}
+                                }
+                            ).then(userservice=>{
+                                res.status(200).json({
+                                    user: user,
+                                    useraddress: useraddress,
+                                    userlanguage: userlanguage,
+                                    userservice: userservice,
+                                })
+                            }).catch(error=>{
+                                console.log(chalk.red.bold.inverse(error));
+                                res.status(200).json({"success": "false"});
+                            })
+                        }).catch(error=>{
+                            console.log(chalk.red.bold.inverse(error));
+                            res.status(200).json({"success": "false"});
+                        })
+                    })
+                    .catch((error) => {
+                        console.log(chalk.red.bold.inverse(error));
+                        res.status(200).json({ success: "false" });
+                    });
+            })
+            .catch((error) => {
+                console.log(chalk.red.bold.inverse(error));
+                res.status(200).json({ success: "false" });
+            });
+    } else {
+        User.findOne({
+            where: { userId: USERID },
+        })
+            .then((user) => {
+                UserService.findAll({
+                    where: { userId: USERID },
+                })
+                    .then((userservice) => {
+                        res.json({
+                            user: user,
+                            userservice: userservice,
+                        });
+                    })
+                    .catch((error2) => {
+                        console.log(chalk.green.bold.inverse(error2));
+                        res.status(200).json({ success: "false" });
+                    });
+            })
+            .catch((error) => {
+                console.log(chalk.yellow.bold.inverse(error));
+
+                res.status(200).json({ success: "false" });
+            });
+    }
 };
